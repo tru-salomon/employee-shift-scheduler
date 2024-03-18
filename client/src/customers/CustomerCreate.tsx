@@ -1,13 +1,7 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { BooleanInput, Create, SimpleForm, TextInput, required, useTranslate } from 'react-admin';
+import { Create, SimpleForm, TextInput, required, useTranslate } from 'react-admin';
 
-import { ColorField, ColorInput } from '../components/ColorInput';
-import FullCalendar from '@fullcalendar/react' // must go before plugins
-import timeGrid from '@fullcalendar/timegrid' // a plugin!
-import dayGrid from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction';
-import Box from '@mui/material/Box';
 
 export const CustomerCreate = () => {
     const translate = useTranslate();

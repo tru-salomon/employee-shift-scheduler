@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Datagrid, TextField, EditButton, DeleteButton, CloneButton } from 'react-admin';
+import { List, Datagrid, TextField, EditButton, CloneButton } from 'react-admin';
 
 
 export const UserList = () => (

@@ -1,8 +1,7 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { BooleanInput, Create, SimpleForm, TextInput, required, Edit, useTranslate } from 'react-admin';
+import { SimpleForm, TextInput, required, Edit, useTranslate } from 'react-admin';
 
-import {  ColorInput } from '../components/ColorInput';
 
 export const CustomerEdit = () => {
     const translate = useTranslate();

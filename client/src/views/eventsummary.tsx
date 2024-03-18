@@ -1,7 +1,6 @@
 import { Card, CardContent } from '@mui/material';
 import React from 'react';
-import { useGetList, Datagrid, TextField, DateField, ReferenceField, NumberField, TextInput, List, DateInput, ReferenceInput, ReferenceArrayInput, SelectArrayInput, Loading, SavedQueriesList, FilterLiveSearch, FilterList, FilterListItem, FunctionField, BooleanField } from 'react-admin';
-import MailIcon from '@mui/icons-material/Mail';
+import { useGetList, Datagrid, TextField, DateField, ReferenceField, List, DateInput, ReferenceArrayInput, SelectArrayInput, Loading, SavedQueriesList, FilterList, FilterListItem, FunctionField } from 'react-admin';
 import CategoryIcon from '@mui/icons-material/Category';
 import { ColorField } from '../components/ColorInput';
 import BadgeIcon from '@mui/icons-material/Badge';

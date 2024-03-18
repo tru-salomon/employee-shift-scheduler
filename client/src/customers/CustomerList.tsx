@@ -1,7 +1,6 @@
 import React from 'react';
-import { List, Datagrid, TextField, NumberField, BooleanField, EditButton, DeleteButton, CloneButton } from 'react-admin';
+import { List, Datagrid, TextField, EditButton, DeleteButton, CloneButton } from 'react-admin';
 
-import { ColorField } from '../components/ColorInput';
 
 export const CustomerList = () => (
     <List>

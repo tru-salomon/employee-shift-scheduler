@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import FullCalendar from '@fullcalendar/react' // must go before plugins
 import timeGrid from '@fullcalendar/timegrid' // a plugin!
 import dayGrid from '@fullcalendar/daygrid'
-import { Box, Chip, useMediaQuery, Theme, Card, CardContent, Checkbox, IconButton, Popover, Button, DialogTitle, DialogContent, DialogActions, FormControl, RadioGroup, FormControlLabel, Radio, Grid } from '@mui/material';
+import { Box, useMediaQuery, Theme, Card, CardContent, Checkbox, IconButton, Popover, Button, DialogTitle, DialogContent, DialogActions, FormControl, RadioGroup, FormControlLabel, Radio, Grid } from '@mui/material';
 import { dataProvider } from '../dataProvider'
 import interactionPlugin from '@fullcalendar/interaction';
 import Dialog from '@mui/material/Dialog';

@@ -3,15 +3,8 @@ import Grid from '@mui/material/Grid';
 import { useTranslate, BooleanInput, Create, SimpleForm, TextInput, required, useNotify, useRedirect } from 'react-admin';
 
 import { ColorInput } from '../components/ColorInput';
-import FullCalendar from '@fullcalendar/react' // must go before plugins
-import timeGrid from '@fullcalendar/timegrid' // a plugin!
-import dayGrid from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction';
-import Box from '@mui/material/Box';
 
 export const EmployeeCreate = () => {
-    const notify = useNotify();
-    const redirect = useRedirect();
     const translate = useTranslate();
 
     return (

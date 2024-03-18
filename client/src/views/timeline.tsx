@@ -1,8 +1,7 @@
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DataSet } from 'vis-data';
 import { Timeline as VisTimeline } from 'vis-timeline/standalone';
 import type {
-	TimelineGroup,
 	TimelineItem
 } from 'vis-timeline/types';
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
@@ -10,14 +9,14 @@ import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 import AddIcon from '@mui/icons-material/Add';
 import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
-import { SimpleForm, TextInput, required, ReferenceInput, SelectInput, DateTimeInput, useNotify, useCreate, useUpdate } from 'react-admin';
+import { SimpleForm, ReferenceInput, SelectInput, DateTimeInput, useNotify, useCreate, useUpdate } from 'react-admin';
 import Fab from '@mui/material/Fab';
 import { dataProvider } from '../dataProvider'
 import { Tooltip, Typography } from '@mui/material';
 import ReactDOM from 'react-dom/client';
 import BadgeIcon from '@mui/icons-material/Badge';
 
-import {textColorOnHEXBg} from '../utils/Utilities';
+import { textColorOnHEXBg } from '../utils/Utilities';
 
 const divStyle = {
 	width: "100%",
@@ -26,18 +25,51 @@ const divStyle = {
 
 export default function TimelineView() {
 
-    const ref = useRef(null);
+	const ref = useRef(null);
 	const notify = useNotify();
 	const [create] = useCreate();
 	const [update] = useUpdate();
 	const [open, setOpen] = useState(false);
-	const [rendered, setRendered] = useState(false);
 	const [props, setProps] = useState<any>({
 		record: undefined
 	});
+
+
 	const timeline = useRef<any | null>(null);
-	const items = useRef<DataSet<TimelineItem>>(new DataSet<TimelineItem>());
-	const groups = useRef<DataSet<TimelineGroup>>(new DataSet<TimelineGroup>());
+	type MyTimelineItem = Omit<TimelineItem, 'content'> & { content: string };
+
+	const items = useRef<DataSet<MyTimelineItem>>(new DataSet<MyTimelineItem>());
+	const groups = useRef<DataSet<MyTimelineItem>>(new DataSet<MyTimelineItem>());
+
+	const handleClose = () => {
+		if (props && props.record) {
+			loadItems(() => setOpen(false));
+		} else {
+			setOpen(false)
+		}
+		setProps({})
+	}
+
+	const handleOpen = (record: any = null) => {
+		if (record && record.id) {
+			setProps({
+				record: {
+					id: record.id,
+					start_date: record.start_date,
+					end_date: record.end_date,
+					employee_id: record.employee_id,
+					customer_id: record.customer_id
+				}
+			})
+		} else {
+			setProps({})
+
+		}
+
+		setOpen(true)
+	}
+
+
 
 	useEffect(() => {
 		timeline.current = new VisTimeline(ref.current!, items.current, groups.current, {
@@ -52,42 +84,20 @@ export default function TimelineView() {
 				item: 5,
 				axis: 10
 			},
-			groupTemplate: function (item, element, data) {
+			groupTemplate: function (item, element) {
 				const txt = item.name + " " + item.surname;
 				const root = item.root ? item.root : ReactDOM.createRoot(
 					element as HTMLElement
 				);
 				root.render(
 					<Tooltip title={txt} followCursor>
-						<div style={{ width: "100%" }}>
+						<div className="timeline-item-content">
 							<BadgeIcon /> {txt} <br />
 							<em>{"Dipendente"}</em>
-						</div>
-					</Tooltip>
-				);
-
-				item.root = root;
-
-				return '<div>.</div>';
-			},
-			template: function (item, element, data) {
-				let tooltip = item.start.toLocaleString("it-IT") + " - " + item.end.toLocaleString("it-IT"); //TODO: make locale dynamic
-
-				let title = (
-					<React.Fragment>
-						<Typography color="inherit">{item.customer_descr} {"(" + item.hours + " hours)"}</Typography>
-						<em>{tooltip}</em>
-					</React.Fragment>
-				)
-
-				const root = item.root ? item.root : ReactDOM.createRoot(
-					element as HTMLElement
-				);
-				root.render(
-					<Tooltip title={title} followCursor>
-						<div style={{ height: 40 }}>
-							{item.customer_descr}<br />
-							{item.hours + " hours"}
+							<div>
+								{item.customer_descr}<br />
+								{item.hours + " hours"}
+							</div>
 						</div>
 					</Tooltip>
 				);
@@ -119,8 +129,8 @@ export default function TimelineView() {
 			locale: 'it_IT', //TODO: make locale dynamic
 			selectable: true,
 			multiselect: false,
-			onRemove: function (item, callback) { },
-			onUpdate: function (item, callback) {
+			onRemove: function () { },
+			onUpdate: function (item) {
 				debugger;
 				handleOpen(item);
 			},
@@ -146,7 +156,7 @@ export default function TimelineView() {
 						console.error(error)
 						callback(null);
 					},
-					onSettled: (data, error) => {
+					onSettled: () => {
 						items.current.remove(recId)
 						handleClose();
 						loadItems(undefined);
@@ -158,7 +168,7 @@ export default function TimelineView() {
 
 		timeline.current.on("scrollSide", debounce(loadItems, 200, false, null))
 		timeline.current.on("rangechange", debounce(loadItems, 200, false, null))
-	}, [timeline, groups, items]);
+	}, [timeline, groups, items, ref, notify, update, handleClose]);
 
 	const postSave = (data: any) => {
 		if (!props || !props.record) {
@@ -167,7 +177,7 @@ export default function TimelineView() {
 					notify("Error on creation") //TODO: make locale dynamic
 					console.error(error)
 				},
-				onSettled: (data, error) => {
+				onSettled: () => {
 					handleClose();
 					loadItems(undefined);
 					notify("Item succesfully created") //TODO: make locale dynamic
@@ -180,7 +190,7 @@ export default function TimelineView() {
 					notify("Error on updating") //TODO: make locale dynamic
 					console.error(error)
 				},
-				onSettled: (data, error) => {
+				onSettled: () => {
 					items.current.remove(recId)
 					handleClose();
 					loadItems(undefined);
@@ -193,7 +203,7 @@ export default function TimelineView() {
 	const debounce = (func: any, wait: number | undefined, immediate: any, extraArgs: any) => {
 		var timeout: any;
 
-		return function(this: any) {
+		return function (this: any) {
 			var context = this,
 				args = extraArgs;
 			var later = function () {
@@ -217,7 +227,7 @@ export default function TimelineView() {
 						return r;
 					}))
 				})
-			.catch((e) => {
+			.catch(() => {
 			})
 			.finally(() => {
 				if (callback)
@@ -264,40 +274,13 @@ export default function TimelineView() {
 					if (callback)
 						callback()
 				})
-			.catch((e) => {
+			.catch(() => {
 			})
 			.finally(() => {
 			});
 	}
 
-	const handleClose = () => {
-		if (props && props.record) {
-			loadItems(() => setOpen(false));
-		} else {
-			setOpen(false)
-		}
-		setProps({})
-	}
-
-	const handleOpen = (record: any = null) => {
-		if (record && record.id) {
-			setProps({
-				record: {
-                    id: record.id,
-                    start_date: record.start_date,
-                    end_date: record.end_date,
-                    employee_id: record.employee_id,
-                    customer_id: record.customer_id
-                }
-			})
-		} else {
-			setProps({})
-
-		}
-
-		setOpen(true)
-	}
-
+	
 	return (
 		<div style={{
 			margin: "30px 0",
@@ -321,13 +304,13 @@ export default function TimelineView() {
 							onSubmit={postSave}>
 							<DateTimeInput source="start_date" label="Data inizio" />
 							<DateTimeInput source="end_date" label="Data fine" />
-								<SelectInput source="type" choices={[
-									{ id: 'j', name: 'Lavoro' },
-									{ id: 'v', name: 'Ferie' },
-									{ id: 'p', name: 'Permesso' },
-									{ id: 's', name: 'Malattia' },
-									{ id: 'm', name: 'Recupero' },
-								]}
+							<SelectInput source="type" choices={[
+								{ id: 'j', name: 'Lavoro' },
+								{ id: 'v', name: 'Ferie' },
+								{ id: 'p', name: 'Permesso' },
+								{ id: 's', name: 'Malattia' },
+								{ id: 'm', name: 'Recupero' },
+							]}
 								defaultValue="j" />
 							<ReferenceInput source="employee_id" reference="employee" label="Employee">
 								<SelectInput optionText="fullname" />

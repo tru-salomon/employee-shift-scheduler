@@ -1,16 +1,12 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { AutocompleteInput, BooleanInput, DateInput, DateTimeInput, FormDataConsumer, ReferenceInput, required, SelectInput, SimpleForm, TimeInput, useCreate, useDelete, useUpdate } from "react-admin";
-import { textColorOnHEXBg, eventTypeEnum } from '../utils/Utilities';
-import { Create, SaveButton, Toolbar, useRedirect, useNotify } from 'react-admin';
+import { AutocompleteInput, BooleanInput, DateTimeInput, FormDataConsumer, ReferenceInput, required, SelectInput, SimpleForm, useDelete } from "react-admin";
+import { eventTypeEnum } from '../utils/Utilities';
+import { SaveButton, Toolbar, useRedirect, useNotify } from 'react-admin';
 import { Box, Grid, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RruleInput from './RruleInput';
-import { RRule, datetime } from 'rrule';
 
 const PostCreateToolbar = (props:any) => {
-    const redirect = useRedirect();
-    const notify = useNotify();
 	const [_delete] = useDelete();
 
     return (
@@ -36,7 +32,7 @@ export const EventPopup = (props: any) => {
             toolbar={<PostCreateToolbar onRemoveClick={onRemoveClick}></PostCreateToolbar>}>
 
             <FormDataConsumer>
-            {({ formData, ...rest }) => 
+            {({ formData }) => 
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>

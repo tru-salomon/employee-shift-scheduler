@@ -46,7 +46,6 @@ export default (
         const rangeEnd = page * perPage - 1;
 
         const filter = params.filter;
-        const operators = { '_gte': '>=', '_lte': '<=', '_neq': '!=' };
 
         const filters = Object.keys(filter).map(key => {
             if (["_gte", "_lte", "_neq"].includes(key.slice(-4))) {

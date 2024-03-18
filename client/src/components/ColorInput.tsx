@@ -67,15 +67,10 @@ export const ColorInput = (props: ColorInputProps) => {
   const {
     label,
     source,
-    className,
     fullWidth,
-    defaultValue,
     options,
     picker = 'Chrome',
-    resource,
-    helperText,
     validate,
-    variant = 'standard',
   } = props
 
   const {
